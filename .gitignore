@@ -1,1 +1,13 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
 
+# Environment variables
+.env
+
+# Logs
+logs
+*.log
+npm-debug.log*
+   

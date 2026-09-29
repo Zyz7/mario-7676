@@ -1,0 +1,21 @@
+{
+  "name": "mario-7676",
+  "version": "1.0.0",
+  "description": "Aplicación web utilizando react, express, typescript y localstorage con el tema de apuestas en carreras de caracoles.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.6.3",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}
