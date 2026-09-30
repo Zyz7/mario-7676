@@ -1,11 +1,12 @@
 import { userRepository } from "../repositories/user.repository";
 import { comparePassword, hashPassword } from "../utils/password";
 import { generateToken } from "../utils/jwt";
+import { LoginResponseDto, RegisterResponseDto } from "../dtos/auth.dto";
 
 
 export const authService = {
 
-    async login(email: string, password: string) {
+    async login(email: string, password: string): Promise<LoginResponseDto> {
 
         const user = await userRepository.findByEmail(email);
         if (!user) {
@@ -14,17 +15,17 @@ export const authService = {
 
         const validPassword = await comparePassword(password, user.password);
         if (!validPassword) {
-            throw new Error("Credenciales inválidas");
+            throw new Error("Email o password inválidos");
         }
 
         const token = generateToken({id: user.id, email: user.email});
 
-        return { user: {
-            id: user.id, name: user.name, email: user.email
-        }, token};
+        return { user: 
+            { id: user.id, name: user.name, email: user.email }, token
+        };
     },
 
-    async register(name: string, email: string, password: string) {
+    async register(name: string, email: string, password: string): Promise<RegisterResponseDto> {
         
         const existingUser = await userRepository.findByEmail(email);
         if (existingUser) {
@@ -32,7 +33,8 @@ export const authService = {
         } 
 
         const hashedPassword = await hashPassword(password);
+        const user = await userRepository.create({name, email, password: hashedPassword});
 
-        return userRepository.create({name, email, password: hashedPassword});
+        return { id: user.id, name: user.name, email: user.email };
     }
 };

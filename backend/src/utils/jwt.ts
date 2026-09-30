@@ -7,7 +7,7 @@ export function generateToken(payload: {
     id: number; email: string;
 }) {
     return jwt.sign(payload, JWT_SECRET, {
-        expiresIn: "24h"
+        expiresIn: "1h"
     });
 }
 
