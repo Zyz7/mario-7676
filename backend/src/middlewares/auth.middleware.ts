@@ -5,17 +5,10 @@ import { verifyToken } from "../utils/jwt";
 export function authMiddleware(req: Request, res: Response, next: NextFunction) {
     try {
         const token = req.cookies.token;
-        console.log("Token recibido:", token ?? "NO HAY COOKIE");
-        
         if (!token) {
             return res.status(401).json({ message: "No autenticado" });
         }
-        /*
-        const [type, token] = header.split(" ");
-        if (type !== "Bearer" || !token) {
-            return res.status(401).json({ message: "Token inválido" });
-        }
-        */
+
         const payload = verifyToken(token);
         req.user = payload;
         next();

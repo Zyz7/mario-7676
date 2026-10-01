@@ -5,12 +5,10 @@ const users: User[] = [];
 export const userRepository = {
   
   async findByEmail(email: string) {
-    
     return users.find(user => user.email === email);
   },
 
   async findById(id: number) {
-
     return users.find(user => user.id === id);
   },
 
