@@ -1,5 +1,5 @@
 import Stripe from "stripe";
-import { CheckoutResult, CreateCheckoutParamas, PaymentProvider } from "./provider.service";
+import type { CheckoutResult, CreateCheckoutParams, PaymentProvider } from "./provider.service";
 
 
 export class StripeProvider implements PaymentProvider {
@@ -14,7 +14,7 @@ export class StripeProvider implements PaymentProvider {
         this.stripe = new Stripe(apiKey, {apiVersion: "2026-08-26.dahlia"});
     }
 
-    async createCheckout(params: CreateCheckoutParamas): Promise<CheckoutResult> {
+    async createCheckout(params: CreateCheckoutParams): Promise<CheckoutResult> {
         const session = await this.stripe.checkout.sessions.create({
             mode: "payment",
 
@@ -31,10 +31,15 @@ export class StripeProvider implements PaymentProvider {
                 }
             ],
 
+            payment_intent_data: {
+                metadata: {
+                    paymentId: params.paymentId
+                }
+            },
+
             metadata: {
                 paymentId: params.paymentId
             },
-
             success_url: params.successUrl,
             cancel_url: params.cancelUrl
         });
@@ -48,6 +53,11 @@ export class StripeProvider implements PaymentProvider {
 
     async verifyWebhook(payload: Buffer, signature: string): Promise<Stripe.Event> {
 
-        return this.stripe.webhooks.constructEvent(payload, signature, process.env.STRIPE_WEBHOOK);
+        const webhook = process.env.STRIPE_WEBHOOK;
+        if (!webhook) {
+            throw new Error("stripe webhook no esta configurado");
+        }
+
+        return this.stripe.webhooks.constructEvent(payload, signature, webhook);
     }
 }

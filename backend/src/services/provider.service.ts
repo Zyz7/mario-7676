@@ -1,4 +1,4 @@
-export interface CreateCheckoutParamas {
+export interface CreateCheckoutParams {
     paymentId: string;
     amount: number;
     currency: string;

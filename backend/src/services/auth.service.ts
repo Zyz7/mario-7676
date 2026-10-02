@@ -1,7 +1,7 @@
 import { userRepository } from "../repositories/user.repository";
 import { comparePassword, hashPassword } from "../utils/password";
 import { generateToken } from "../utils/jwt";
-import { LoginResponseDto, RegisterResponseDto } from "../dtos/auth.dto";
+import type { LoginResponseDto, RegisterResponseDto } from "../dtos/auth.dto";
 
 
 export const authService = {
@@ -21,7 +21,7 @@ export const authService = {
         const token = generateToken({id: user.id, email: user.email});
 
         return { user: 
-            { id: user.id, name: user.name, email: user.email }, token
+            { id: String(user.id), name: user.name, email: user.email }, token
         };
     },
 
@@ -35,6 +35,6 @@ export const authService = {
         const hashedPassword = await hashPassword(password);
         const user = await userRepository.create({name, email, password: hashedPassword});
 
-        return { id: user.id, name: user.name, email: user.email };
+        return { id: String(user.id), name: user.name, email: user.email };
     }
 };

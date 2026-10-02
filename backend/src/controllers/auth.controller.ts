@@ -1,7 +1,7 @@
-import { Request, Response, NextFunction } from "express";
+import type { Request, Response, NextFunction } from "express";
 import { authService } from "../services/auth.service";
-import { LoginResponseDto, RegisterResponseDto } from "../dtos/auth.dto";
-import { LoginRequestDto, RegisterRequestDto } from "../schemas/auth.schema";
+import type { LoginRequestDto, RegisterRequestDto } from "../schemas/auth.schema";
+import type { ErrorResponseDto, LoginResponseDto, RegisterResponseDto } from "../dtos/auth.dto";
 
 
 export async function login(
@@ -20,14 +20,14 @@ export async function login(
             maxAge: 1000 * 60 * 60 * 1
         });
 
-        res.json({ user: { id: result.user.id, name: result.user.name, email: result.user.email } });
+        res.json({ user: { id: result.user.id, name: result.user.name, email: result.user.email }, token: "" });
     } catch (error) {
         next(error);
     }
 } 
 
 export async function register(
-    req: Request<{}, {}, RegisterRequestDto>, res: Response<RegisterResponseDto>, next: NextFunction
+    req: Request<{}, {}, RegisterRequestDto>, res: Response<RegisterResponseDto | ErrorResponseDto>, next: NextFunction
 ) {
     try {
         const { name, email, password, confirm } = req.body;

@@ -1,7 +1,9 @@
-import { Payment, PaymentStatus, PaymentCreate } from "../types/payment.type";
+import type { PaymentResponseDto } from "../dtos/payment.dto";
+import type { Payment, PaymentStatus, PaymentCreate } from "../types/payment.type";
 
 
 const payments: Payment[] = [];
+const paymentResponse: PaymentResponseDto[] = [];
 
 export const paymentRepository = {
 
@@ -12,7 +14,7 @@ export const paymentRepository = {
     }): Promise<Payment> {
         // INSERT INTO payments ...
         const payment: Payment = {
-            id: payments.length + 1,
+            id: String(payments.length + 1),
             userId: data.userId,
             amount: data.amount,
             currency: data.currency,
@@ -33,18 +35,31 @@ export const paymentRepository = {
         providerPaymentId?: string
     ): Promise<void> {
         // UPDATE payments ...
-        const index = payments.findIndex(p => p.id === paymentId);
-        if (index !== -1) {
-            payments[index].status = status;
-            if (providerPaymentId) {
-                payments[index].providerPaymentId = providerPaymentId;
-            }
-            payments[index].updatedAt = new Date();
+        const payment = payments.find(p => p.id === paymentId);
+        if (!payment) {
+            return;
         }
+
+        payment.status = status;
+        if (providerPaymentId) {
+            payment.providerPaymentId = providerPaymentId;
+        }
+
+        payment.updatedAt = new Date();
     },
 
     async findById(paymentId: string): Promise<Payment | null> {
         // SELECT ...
         return payments.find(p => p.id === paymentId) || null;
+    },
+
+    async createPayment(payment: PaymentResponseDto) {
+
+        paymentResponse.push(payment);
+    },
+
+    async getPayment(id: string): Promise<PaymentResponseDto | null> {
+
+        return paymentResponse.filter(p => p.payer_id === id).at(-1) || null;
     }
 }
