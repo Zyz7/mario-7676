@@ -10,7 +10,7 @@ export async function login(
     try {
         const { email, password } = req.body;
         const result = await authService.login(email, password);
-
+        /*
         res.cookie("token", result.token, {
             httpOnly: true,
             //secure: process.env.NODE_ENV === "prod",
@@ -19,8 +19,8 @@ export async function login(
             sameSite: "lax",
             maxAge: 1000 * 60 * 60 * 1
         });
-
-        res.json({ user: { id: result.user.id, name: result.user.name, email: result.user.email }, token: "" });
+        */
+        res.json({ user: { id: result.user.id, name: result.user.name, email: result.user.email }, token: result.token });
     } catch (error) {
         next(error);
     }
@@ -45,6 +45,7 @@ export async function register(
 
 export async function logout(req: Request, res: Response, next: NextFunction) {
     try {
+        /*
         const token = req.cookies.token;
         if (!token) {
             return res.status(401).json({ message: "No autenticado" });
@@ -55,9 +56,13 @@ export async function logout(req: Request, res: Response, next: NextFunction) {
             secure: process.env.NODE_ENV === "prod",
             sameSite: "strict"
         });
-
+        */
         res.json({ message: "Logout exitoso" });
     } catch (error) {
         next(error);
     }
+}
+
+export async function me(req: Request, res: Response) {
+    res.json(req.user);
 }

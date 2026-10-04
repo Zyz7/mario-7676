@@ -1,4 +1,4 @@
 export type Balance = {
-    userId: string;
+    userId: number;
     amount: number;
 };

@@ -4,7 +4,7 @@ export type PaymentStatus =
 
 export interface Payment {
     id: string;
-    userId: string;
+    userId: number;
     amount: number;
     currency: string;
     status: PaymentStatus;
@@ -15,7 +15,7 @@ export interface Payment {
 }
 
 export interface PaymentCreate {
-    userId: string;
+    userId: number;
     amount: number;
     currency: string;
 }

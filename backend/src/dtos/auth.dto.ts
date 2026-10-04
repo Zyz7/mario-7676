@@ -1,6 +1,6 @@
 export interface LoginResponseDto {
     user: {
-        id: string;
+        id: number;
         name: string;
         email: string;
     },
@@ -8,7 +8,7 @@ export interface LoginResponseDto {
 }
 
 export interface RegisterResponseDto {
-    id: string;
+    id: number;
     name: string;
     email: string;
 }

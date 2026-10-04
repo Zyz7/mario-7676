@@ -6,6 +6,6 @@ export type PaymentResponseDto = {
     date_created: Date;
     authorization_code: string | null;
     reference: string;
-    payer_id: string;
+    payer_id: number;
     payer_email: string;
 }
