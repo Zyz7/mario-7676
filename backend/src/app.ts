@@ -12,8 +12,7 @@ import { errorMiddleware } from "./middlewares/error.middleware";
 
 
 const app = express();
-const PORT = process.env.PORT || 3000;
-
+//const PORT = process.env.PORT || 3000;
 app.use(cors());
 //app.use(morgan('combined'));
 app.use(morgan('dev'));
@@ -24,6 +23,5 @@ app.use(express.json());
 app.use("/api/v1", routes);
 app.use(errorMiddleware);
 
-app.listen(PORT, () => {
-  console.log(`running on http://localhost:${PORT}/api/v1`);
-});
+//app.listen(PORT, () => {console.log(`running on http://localhost:${PORT}/api/v1`);});
+export default app;
