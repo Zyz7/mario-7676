@@ -55,8 +55,8 @@ Ejecutar: stripe listen --events checkout.session.completed,payment_intent.payme
 cd backend
 
 Ejecuta las pruebas mostrando información detallada
-npm run test:verbose	
+npm run test:verbose
 
 
 
-npm run test:coverage
+
