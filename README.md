@@ -24,7 +24,9 @@ npm install
 
 ## Configuración
 Crear un archivo .env dentro de la carpeta raíz:
+
 Crear un archivo .env dentro de la carpeta frontend:
+
 Agregar en estos archivos las variables de entorno necesarias para el funcionamiento de la aplicación.
 
 ## Ejecución del proyecto
@@ -34,12 +36,14 @@ Una terminal más para stripe.
 Backend
 Abrir una terminal y entrar a la carpeta del backend: 
 cd backend
+
 Ejecutar el servidor en modo desarrollo: 
 npm run dev
 
 Frontend
 Abrir una segunda terminal y entrar a la carpeta del frontend: 
 cd frontend
+
 Ejecutar la aplicación en modo desarrollo: 
 npm run dev
 
@@ -49,6 +53,7 @@ Ejecutar: stripe listen --events checkout.session.completed,payment_intent.payme
 
 ## Ejecución de las pruebas back
 cd backend
+
 Ejecuta las pruebas mostrando información detallada
 npm run test:verbose	
 
