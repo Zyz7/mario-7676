@@ -5,13 +5,13 @@ const balances: Balance[] = [];
 
 export const balanceRepository = {
 
-    async getBalance(userId: string): Promise<number> {
+    async getBalance(userId: number): Promise<number> {
         const balance = balances.find(b => b.userId === userId);
 
         return balance?.amount ?? 0;
     },
 
-    async addBalance(userId: string, amount: number): Promise<number> {
+    async addBalance(userId: number, amount: number): Promise<number> {
         let balance = balances.find(b => b.userId === userId);
 
         if (!balance) {

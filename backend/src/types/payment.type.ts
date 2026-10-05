@@ -3,7 +3,7 @@ export type PaymentStatus =
     | "failed" | "cancelled" | "refunded";
 
 export interface Payment {
-    id: string;
+    id: number;
     userId: number;
     amount: number;
     currency: string;

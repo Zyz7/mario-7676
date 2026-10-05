@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { storage } from "../utils/storage";
 import { paymentService } from "../services/payment.service";
-import type { PaymentStore } from "../types/payment.type";
+import type { PaymentRecharge, PaymentStore } from "../types/payment.type";
 
 
 export const paymentStore = create<PaymentStore>((set) => ({
@@ -18,5 +18,15 @@ export const paymentStore = create<PaymentStore>((set) => ({
       // Si falla el backend, mantenemos el valor local
       set({balance: storage.getBalance(), isLoading: false,});
     }
+  },
+
+  recharge: async (data: PaymentRecharge) => {
+    const payment = await paymentService.recharge(data);
+    
+    window.location.href = payment.checkoutUrl;
+  },
+
+  status: async (id: number) => {
+    return await paymentService.status(id);
   },
 }));

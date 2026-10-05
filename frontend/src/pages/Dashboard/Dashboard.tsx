@@ -1,22 +1,35 @@
+import { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { authHook } from "../../hooks/auth.hook";
 import { paymentHook } from "../../hooks/payment.hook";
+import { snailRacesData } from "../../types/dashboard.type";
 import {
-  PieChart,
+  BarChart, // gráfica barras
+  Bar,
+  PieChart, // gráfica donut
   Pie,
+  XAxis,
+  YAxis,
   Cell,
+  CartesianGrid,
   ResponsiveContainer,
   Tooltip,
   Legend,
 } from "recharts";
 
 
-
 export const Dashboard = () => {
     const navigate = useNavigate();
     const { user, logout } = authHook();
-    const { balance, isLoading, initializeBalance } = paymentHook();
+    const {
+      balance,
+      isLoading,
+      initializeBalance,
+      recharge,
+    } = paymentHook();
+
+    const [rechargeAmount, setRechargeAmount] = useState("");
     const betsData = [
       {
         name: "Ganadas",
@@ -36,6 +49,28 @@ export const Dashboard = () => {
         await logout();
         navigate("/login");
     };
+
+    const handleRecharge = async () => {
+  const amount = Number(rechargeAmount);
+
+  if (!amount || amount <= 0) {
+    alert("Ingresa un monto válido");
+    return;
+  }
+
+  const amountInCents = Math.round(amount * 100);
+
+  try {
+    await recharge({
+      amount: amountInCents,
+      currency: "MXN",
+    });
+  } catch (error) {
+    console.error("Error al realizar la recarga:", error);
+    alert("No se pudo iniciar la recarga");
+  }
+};
+
 
     return (
       <main className="min-h-screen bg-slate-100">
@@ -126,6 +161,65 @@ export const Dashboard = () => {
           </p>
         )}
 
+        <p className="mt-1 text-sm text-slate-500">
+          
+        </p>
+
+        <div className="mt-5 flex flex-col gap-3">
+
+    <div className="relative flex-1">
+      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">
+        $
+      </span>
+
+      <input
+        type="number"
+        min="1"
+        step="0.01"
+        value={rechargeAmount}
+        onChange={(e) => setRechargeAmount(e.target.value)}
+        placeholder="100.00"
+        className="
+          w-full
+          rounded-lg
+          border
+          border-slate-300
+          bg-white
+          py-2
+          pl-8
+          pr-4
+          text-slate-900
+          outline-none
+          transition
+          focus:border-blue-500
+          focus:ring-2
+          focus:ring-blue-500/20
+        "
+      />
+    </div>
+
+    <button
+      type="button"
+      onClick={handleRecharge}
+      className="
+        rounded-lg
+        bg-blue-600
+        px-6
+        py-2
+        font-semibold
+        text-white
+        transition
+        hover:bg-blue-700
+        focus:outline-none
+        focus:ring-2
+        focus:ring-blue-500/30
+      "
+    >
+      Recargar saldo
+    </button>
+
+  </div>
+
       </div>
 
       {/* Apuestas */}
@@ -179,6 +273,73 @@ export const Dashboard = () => {
       </div>
 
     </div>
+
+    {/* Carreras */}
+      <div className="mt-6 rounded-2xl bg-white p-6 shadow-sm">
+
+  <div className="mb-6">
+    <h3 className="text-lg font-semibold text-slate-900">
+      Victorias de los caracoles
+    </h3>
+
+    <p className="text-sm text-slate-500">
+      Resultados de las 6 carreras realizadas durante el día
+    </p>
+  </div>
+
+  <div className="h-80 w-full">
+
+    <ResponsiveContainer width="100%" height="100%">
+      <BarChart
+        data={snailRacesData}
+        margin={{
+          top: 10,
+          right: 20,
+          left: 0,
+          bottom: 10,
+        }}
+      >
+
+        <CartesianGrid
+          strokeDasharray="3 3"
+          stroke="#e2e8f0"
+        />
+
+        <XAxis
+          dataKey="caracol"
+          tick={{
+            fill: "#475569",
+            fontSize: 12,
+          }}
+        />
+
+        <YAxis
+          allowDecimals={false}
+          domain={[0, 6]}
+          tick={{
+            fill: "#475569",
+            fontSize: 12,
+          }}
+        />
+
+        <Tooltip
+          formatter={(value) => [`${value}`, "Victorias"]}
+        />
+
+        <Bar
+          dataKey="victorias"
+          name="Victorias"
+          fill="#3b82f6"
+          radius={[8, 8, 0, 0]}
+        />
+
+      </BarChart>
+    </ResponsiveContainer>
+
+  </div>
+
+</div>
+
   </section>
 </main>
 

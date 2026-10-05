@@ -12,6 +12,9 @@ import { authStore } from "./stores/auth.store";
 import { Dashboard } from "./pages/Dashboard/Dashboard";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 
+import { PaymentSuccess } from "./pages/Payment/PaymentSuccess";
+import { PaymentFailed } from "./pages/Payment/PaymentFailed";
+
 
 function App() {
   const initialize = authStore((state) => state.initialize);
@@ -36,6 +39,18 @@ function App() {
           <Route
             path="/dashboard"
             element={<Dashboard />}
+          />
+
+          {/* Stripe - recarga exitosa */}
+          <Route
+            path="/payment/success"
+            element={<PaymentSuccess />}
+          />
+
+          {/* Stripe - recarga fallida */}
+          <Route
+            path="/payment/failed"
+            element={<PaymentFailed />}
           />
         </Route>
 

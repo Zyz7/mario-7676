@@ -2,7 +2,7 @@ import type { User } from "../types/auth.type";
 
 
 const USERS = "users";
-const BALANCE = "blanace";
+const BALANCE = "balance";
 const ACCESS_TOKEN = "accessToken";
 
 export const storage = {

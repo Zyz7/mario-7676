@@ -4,8 +4,8 @@ import { getBalance, createPayment, getStatus } from "../services/payment.servic
 
 export async function recharge(req: Request, res: Response, next: NextFunction) {
     try {
-        const userId = req.user.id;
-        const result = await createPayment(userId, req.body);
+        const userId = req.user?.id;
+        const result = await createPayment(Number(userId), req.body);
 
         res.status(201).json(result);
     } catch (error) {
@@ -15,8 +15,8 @@ export async function recharge(req: Request, res: Response, next: NextFunction) 
 
 export async function balance(req: Request, res: Response, next: NextFunction) {
     try {
-        const userId = req.user.id;
-        const result = await getBalance(userId);
+        const userId = req.user?.id;
+        const result = await getBalance(Number(userId));
 
         res.status(200).json({ Balance: result / 100 });
     } catch (error) {
@@ -27,7 +27,7 @@ export async function balance(req: Request, res: Response, next: NextFunction) {
 export async function status(req: Request<{ id: string}>, res: Response, next: NextFunction) {
     try {
         const { id } = req.params;
-        const result = await getStatus(id);
+        const result = await getStatus(Number(id));
 
         res.status(200).json(result);
     } catch (error) {

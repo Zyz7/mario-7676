@@ -8,13 +8,13 @@ const paymentResponse: PaymentResponseDto[] = [];
 export const paymentRepository = {
 
     async create(data: {
-        userId: string;
+        userId: number;
         amount: number;
         currency: string;
     }): Promise<Payment> {
         // INSERT INTO payments ...
         const payment: Payment = {
-            id: String(payments.length + 1),
+            id: payments.length + 1,
             userId: data.userId,
             amount: data.amount,
             currency: data.currency,
@@ -30,7 +30,7 @@ export const paymentRepository = {
     },
 
     async updateStatus(
-        paymentId: string,
+        paymentId: number,
         status: PaymentStatus,
         providerPaymentId?: string
     ): Promise<void> {
@@ -48,7 +48,7 @@ export const paymentRepository = {
         payment.updatedAt = new Date();
     },
 
-    async findById(paymentId: string): Promise<Payment | null> {
+    async findById(paymentId: number): Promise<Payment | null> {
         // SELECT ...
         return payments.find(p => p.id === paymentId) || null;
     },
@@ -58,7 +58,7 @@ export const paymentRepository = {
         paymentResponse.push(payment);
     },
 
-    async getPayment(id: string): Promise<PaymentResponseDto | null> {
+    async getPayment(id: number): Promise<PaymentResponseDto | null> {
 
         return paymentResponse.filter(p => p.payer_id === id).at(-1) || null;
     }

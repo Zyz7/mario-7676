@@ -9,7 +9,7 @@ import type { PaymentResponseDto } from "../dtos/payment.dto";
 // Instancia singleton (se crean una sola vez)
 export const stripeProvider = new StripeProvider();
 
-export async function createPayment(userId: string, dto: PaymentCreateDto) {
+export async function createPayment(userId: number, dto: PaymentCreateDto) {
     
     if (dto.amount <= 0) {
             throw new Error("Amount must be greater than zero");
@@ -17,11 +17,11 @@ export async function createPayment(userId: string, dto: PaymentCreateDto) {
     
     const payment = await paymentRepository.create({ userId, amount: dto.amount, currency: dto.currency });
     const checkout = await stripeProvider.createCheckout({
-        paymentId: payment.id,
+        paymentId: String(payment.id),
         amount: payment.amount,
         currency: payment.currency,
-        successUrl: "https://example.com/payment/success",
-        cancelUrl: "https://example.com/payment/cancel"
+        successUrl: `http://localhost:5173/payment/success?id=${payment.id}`,
+        cancelUrl: `http://localhost:5173/payment/failed?id=${payment.id}`
     });
     
     await paymentRepository.updateStatus(
@@ -46,7 +46,7 @@ export async function handleStripeWebhook(payload: Buffer, signature: string): P
                 throw new Error("Missing paymentId");
             }
             
-            const payment = await paymentRepository.findById(paymentId);
+            const payment = await paymentRepository.findById(Number(paymentId));
             if (!payment) {
                 throw new Error("Payment not found");
             }
@@ -54,7 +54,7 @@ export async function handleStripeWebhook(payload: Buffer, signature: string): P
             // Evitar sumar dos veces si Stripe vuelve a enviar el webhook 
             if (payment.status !== "paid") {
                 await balanceRepository.addBalance(payment.userId, payment.amount);
-                await paymentRepository.updateStatus(paymentId, "paid", session.id);
+                await paymentRepository.updateStatus(Number(paymentId), "paid", session.id);
             }
 
             const paymentResponse: PaymentResponseDto = {
@@ -65,7 +65,7 @@ export async function handleStripeWebhook(payload: Buffer, signature: string): P
                 date_created: new Date(session.created * 1000),
                 authorization_code: String(session.payment_intent),
                 reference: String(session.payment_method_configuration_details?.id),
-                payer_id: paymentId,
+                payer_id: Number(paymentId),
                 payer_email: String(session.customer_details?.email),
             };
             await paymentRepository.createPayment(paymentResponse);
@@ -81,7 +81,7 @@ export async function handleStripeWebhook(payload: Buffer, signature: string): P
                 throw new Error("Missing paymentId");
             }
 
-            await paymentRepository.updateStatus(paymentId, "failed");
+            await paymentRepository.updateStatus(Number(paymentId), "failed");
             const paymentResponse: PaymentResponseDto = {
                 id: paymentIntent.id,
                 status: "failed",
@@ -90,7 +90,7 @@ export async function handleStripeWebhook(payload: Buffer, signature: string): P
                 date_created: new Date(paymentIntent.created * 1000),
                 authorization_code: null,
                 reference: String(paymentIntent.payment_details?.order_reference),
-                payer_id: paymentId,
+                payer_id: Number(paymentId),
                 payer_email: paymentIntent.receipt_email ?? "",
             };
             await paymentRepository.createPayment(paymentResponse);
@@ -103,13 +103,13 @@ export async function handleStripeWebhook(payload: Buffer, signature: string): P
     }
 }
 
-export async function getBalance(userId: string) {
+export async function getBalance(userId: number) {
     
     const saldo = await balanceRepository.getBalance(userId);
     return saldo;
 }
 
-export async function getStatus(userId: string): Promise<PaymentResponseDto | null> {
+export async function getStatus(userId: number): Promise<PaymentResponseDto | null> {
     
     const payment = await paymentRepository.getPayment(userId);
     return payment;
